@@ -5,7 +5,7 @@
 
 <%
 	CompanyDao dao = CompanyDao.getInstance();
-	List<Object> list = dao.getList();
+	List<CompanyDto> list = dao.getList();
 %>	
 
 <html>
@@ -54,8 +54,7 @@
 					</thead>
 
 					<tbody id="companyListTable">
- 					<%for(Object obj : list){ 
- 							CompanyDto tmp=(CompanyDto)obj;%>
+ 					<%for(CompanyDto tmp : list){ %>
 						<tr class="companyList">
 							<td class="companyNo"><%=tmp.getCompanyNo() %></td>
 							<td class="companyName" data-num="<%=tmp.getCompanyNo() %>">

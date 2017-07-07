@@ -8,10 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kobin.util.DbcpBean;
-import kobin.util.TemplateDao;
 
 
-public class CompanyDao implements TemplateDao {
+public class CompanyDao implements CompanyDaoInterface {
 	private static CompanyDao dao;
 	private CompanyDao(){};
 	public static CompanyDao getInstance(){
@@ -21,7 +20,7 @@ public class CompanyDao implements TemplateDao {
 		return dao;
 	}
 
-	public Object getData(Object id){
+	public CompanyDto getData(int id){
 		Integer companyNo = (Integer)id;
 		
 		Connection conn = null;
@@ -58,13 +57,13 @@ public class CompanyDao implements TemplateDao {
 		return dto;
 	}
 
-	public List<Object> getList(){
+	public List<CompanyDto> getList(){
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		CompanyDto dto = null;
-		List<Object> list = new ArrayList<>();
+		List<CompanyDto> list = new ArrayList<>();
 		String sql = "select * from company order by companyName asc";
 
 		try {
@@ -105,7 +104,7 @@ public class CompanyDao implements TemplateDao {
 	}
 	
 	@Override
-	public boolean isValid(Object obj) {
+	public boolean isValid(CompanyDto obj) {
 		CompanyDto dto = (CompanyDto)obj;
 		
 		Connection conn = null;
@@ -138,9 +137,7 @@ public class CompanyDao implements TemplateDao {
 		return isValid;
 	}
 
-	public boolean insert(Object obj){
-		CompanyDto dto = (CompanyDto) obj;
-		
+	public boolean insert(CompanyDto dto){		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -178,9 +175,7 @@ public class CompanyDao implements TemplateDao {
 	}
 	
 	@Override
-	public boolean update(Object obj) {
-		CompanyDto dto = (CompanyDto) obj;
-		
+	public boolean update(CompanyDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -218,7 +213,7 @@ public class CompanyDao implements TemplateDao {
 		}
 	}
 	
-	public boolean delete(Object id){
+	public boolean delete(int id){
 		Integer companyNo = (Integer)id;
 		
 		Connection conn = null;
