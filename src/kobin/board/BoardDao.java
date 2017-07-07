@@ -8,17 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import kobin.util.DbcpBean;
-import kobin.util.TemplateDao;
 
-public class BoardDao implements TemplateDao {
+public class BoardDao implements BoardDaoInterface {
 
 	@Override
-	public List<Object> getList() {
+	public List<BoardDto> getList() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		List<Object> list = new ArrayList<>();
+		List<BoardDto> list = new ArrayList<>();
 		String sql = "SELECT * FROM board ORDER BY boardNo DESC";
 
 		try {
@@ -65,7 +64,7 @@ public class BoardDao implements TemplateDao {
 	}
 
 	@Override
-	public Object getData(Object id) {
+	public BoardDto getData(int id) {
 		Integer boardNo = (Integer)id;
 		
 		Connection conn = null;
@@ -97,9 +96,7 @@ public class BoardDao implements TemplateDao {
 	}
 
 	@Override
-	public boolean isValid(Object obj) {
-		BoardDto dto = (BoardDto)obj;
-		
+	public boolean isValid(BoardDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -130,9 +127,7 @@ public class BoardDao implements TemplateDao {
 	}
 
 	@Override
-	public boolean insert(Object obj) {
-		BoardDto dto = (BoardDto)obj;
-		
+	public boolean insert(BoardDto dto) {		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -172,9 +167,7 @@ public class BoardDao implements TemplateDao {
 	}
 
 	@Override
-	public boolean update(Object obj) {
-		BoardDto dto = (BoardDto)obj;
-		
+	public boolean update(BoardDto dto) {		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -214,7 +207,7 @@ public class BoardDao implements TemplateDao {
 	}
 
 	@Override
-	public boolean delete(Object id) {
+	public boolean delete(int id) {
 		Integer boardNo = (Integer)id;
 		
 		Connection conn = null;

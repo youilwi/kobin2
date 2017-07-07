@@ -29,7 +29,7 @@ CREATE TABLE member(
    regdate DATE
 );
 
-CREATE TABLE orderRequest(
+CREATE TABLE orderReq(
    orderNo NUMBER(7) CONSTRAINT orderRequest_orderNo_pk PRIMARY KEY,
    memberId VARCHAR2(50) CONSTRAINT orderRequest_memberId_fk REFERENCES member(memberId),
    workNo NUMBER(7) CONSTRAINT orderRequest_workNo_fk REFERENCES work(workNo),

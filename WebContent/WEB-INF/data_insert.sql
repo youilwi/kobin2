@@ -42,7 +42,7 @@
 	   values('user05', '0505', '이순신',
 	   27, '1', 'kim@naver.com', '010-6517-6369', '전라도', SYSDATE);
 	   
-	insert into orderRequest(orderNo, memberId, workNo, companyNo, orderTitle,
+	insert into orderReq(orderNo, memberId, workNo, companyNo, orderTitle,
 	   orderPrice, orderComm, orderStatus, orderResult, startDate, enddate)
 	   values(orderNo_SEQ.NEXTVAL, 'user01', 21, 23, '인테리어 첫공사', 1000000, 100000,
 	   '1', 'B', SysDate, null);

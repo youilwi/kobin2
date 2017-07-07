@@ -9,7 +9,7 @@ import java.util.List;
 
 import kobin.util.DbcpBean;
 
-public class MemberDao {
+public class MemberDao implements MemberDaoInterface {
 	private static MemberDao dao;
 	
 	private MemberDao(){ }
