@@ -40,7 +40,7 @@ CREATE TABLE orderReq(
    orderStatus CHAR(1) NOT NULL,
    orderResult CHAR(1),
    startDate DATE NOT NULL,
-   enddate DATE
+   endDate DATE
 );
 
 CREATE SEQUENCE orderNo_SEQ;

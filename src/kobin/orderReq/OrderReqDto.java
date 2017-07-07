@@ -11,13 +11,13 @@ public class OrderReqDto {
 	private String orderStatus;
 	private String orderResult;
 	private String startDate;
-	private String enddate;
+	private String endDate;
 	
 	public OrderReqDto(){ }
 	
 	public OrderReqDto(int orderNo, String memberId, int workNo, int companyNo, 
 			String orderTitle, int orderPrice, int orderComm, String orderStatus, 
-			String orderResult, String startDate, String enddate) {
+			String orderResult, String startDate, String endDate) {
 		super();
 		this.orderNo = orderNo;
 		this.memberId = memberId;
@@ -29,7 +29,7 @@ public class OrderReqDto {
 		this.orderStatus = orderStatus;
 		this.orderResult = orderResult;
 		this.startDate = startDate;
-		this.enddate = enddate;
+		this.endDate = endDate;
 	}
 	
 	public int getOrderNo() {
@@ -92,10 +92,10 @@ public class OrderReqDto {
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
-	public String getEnddate() {
-		return enddate;
+	public String getEndDate() {
+		return endDate;
 	}
-	public void setEnddate(String enddate) {
-		this.enddate = enddate;
+	public void setEndDate(String endDate) {
+		this.endDate = endDate;
 	}
 }

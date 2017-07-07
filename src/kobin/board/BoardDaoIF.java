@@ -2,7 +2,7 @@ package kobin.board;
 
 import java.util.List;
 
-public interface BoardDaoInterface {
+public interface BoardDaoIF {
 	public List<BoardDto> getList();
 	public BoardDto getData(int id);
 	public boolean isValid(BoardDto dto);

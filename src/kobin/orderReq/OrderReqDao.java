@@ -1,4 +1,4 @@
-package kobin.member;
+package kobin.orderReq;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,23 +9,24 @@ import java.util.List;
 
 import kobin.util.DbcpBean;
 
-public class MemberDao implements MemberDaoIF {
-	private static MemberDao dao;
+public class OrderReqDao implements OrderReqDaoIF {
+	private static OrderReqDao dao;
 	
-	private MemberDao(){ }
-	public static MemberDao getInstance(){
+	private OrderReqDao(){ }
+	public static OrderReqDao getInstance(){
 		if(dao==null){
-			dao=new MemberDao();
+			dao=new OrderReqDao();
 		}
 		return dao;
 	}
-	
-	public List<MemberDto> getList(){		
+	@Override
+	public List<OrderReqDto> getList() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		List<MemberDto> list = new ArrayList<>();
-		String sql = "SELECT * FROM member ";
+		
+		List<OrderReqDto> list = new ArrayList<>();
+		String sql = "SELECT * FROM orderReq ";
 
 		try {
 			conn = new DbcpBean().getConn();
@@ -34,27 +35,31 @@ public class MemberDao implements MemberDaoIF {
 			rs = pstmt.executeQuery();
 			
 			while (rs.next()) {
+				int orderNo = rs.getInt("orderNo");
 				String memberId = rs.getString("memberId");
-				String memberName = rs.getString("memberName");
-				String memberPwd = rs.getString("memberPwd");
+				int workNo = rs.getInt("workNo");
 				int companyNo = rs.getInt("companyNo");
-				String memberLevel = rs.getString("memberLevel");
-				String memberEmail = rs.getString("memberEmail");
-				String memberPhone = rs.getString("memberPhone");
-				String workArea = rs.getString("workArea");
-				String regDate = rs.getString("regDate");
+				String orderTitle = rs.getString("orderTitle");
+				int orderPrice = rs.getInt("orderPrice");
+				int orderComm = rs.getInt("orderComm");
+				String orderStatus = rs.getString("orderStatus");
+				String orderResult = rs.getString("orderResult");
+				String startDate = rs.getString("startDate");
+				String endDate = rs.getString("endDate");
 				
-				MemberDto dto = new MemberDto();
+				OrderReqDto dto = new OrderReqDto();
 				
+				dto.setOrderNo(orderNo);
 				dto.setMemberId(memberId);
-				dto.setMemberName(memberName);
-				dto.setMemberPwd(memberPwd);
+				dto.setWorkNo(workNo);
 				dto.setCompanyNo(companyNo);
-				dto.setMemberLevel(memberLevel);
-				dto.setMemberEmail(memberEmail);
-				dto.setMemberPhone(memberPhone);
-				dto.setWorkArea(workArea);
-				dto.setRegDate(regDate);
+				dto.setOrderTitle(orderTitle);
+				dto.setOrderPrice(orderPrice);
+				dto.setOrderComm(orderComm);
+				dto.setOrderStatus(orderStatus);
+				dto.setOrderResult(orderResult);
+				dto.setStartDate(startDate);
+				dto.setEndDate(endDate);
 
 				list.add(dto);
 			}
@@ -70,32 +75,37 @@ public class MemberDao implements MemberDaoIF {
 
 		return list;
 	}
-	
-	public MemberDto getData(String id){
+
+	@Override
+	public OrderReqDto getData(int id) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		MemberDto dto = null;
-		String sql="select * from member where memberId=? ";
+		
+		OrderReqDto dto = null;
+		String sql="select * from OrderReq where orderNo=? ";
 
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, id);
+			pstmt.setInt(1, id);
 
 			rs = pstmt.executeQuery();
+			
 			if (rs.next()) {
-				dto = new MemberDto();
+				dto = new OrderReqDto();
 				
-				dto.setMemberId(id);
-				dto.setMemberPwd(rs.getString("memberPwd"));
-				dto.setMemberName(rs.getString("memberName"));
+
+				dto.setMemberId(rs.getNString("memberId"));
+				dto.setWorkNo(rs.getInt("workNo"));
 				dto.setCompanyNo(rs.getInt("companyNo"));
-				dto.setMemberLevel(rs.getString("memberLevel"));
-				dto.setMemberEmail(rs.getString("memberEmail"));
-				dto.setMemberPhone(rs.getString("memberPhone"));
-				dto.setWorkArea(rs.getString("workArea"));
-				dto.setRegDate(rs.getString("regDate"));
+				dto.setOrderTitle(rs.getString("orderTitle"));
+				dto.setOrderPrice(rs.getInt("orderPrice"));
+				dto.setOrderComm(rs.getInt("orderComm"));
+				dto.setOrderStatus(rs.getString("orderStatus"));
+				dto.setOrderResult(rs.getString("orderResult"));
+				dto.setStartDate(rs.getString("startDate"));
+				dto.setEndDate(rs.getString("endDate"));
 			}
 		} catch (SQLException se) {
 			se.printStackTrace();
@@ -109,23 +119,23 @@ public class MemberDao implements MemberDaoIF {
 
 		return dto;
 	}
-		
-	public boolean isValid(MemberDto dto){
+
+	@Override
+	public boolean isValid(OrderReqDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		boolean isValid = false;
-		String sql = "SELECT * FROM member WHERE memberId=? AND memberPwd=?";
+		String sql = "SELECT * FROM orderReq WHERE orderNo=? ";
 		
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, dto.getMemberId());
-			pstmt.setString(2, dto.getMemberPwd());
-
+			pstmt.setInt(1, dto.getOrderNo());
 			rs = pstmt.executeQuery();
+			
 			if(rs.next()) {
 				isValid = true;
 			}
@@ -141,68 +151,33 @@ public class MemberDao implements MemberDaoIF {
 
 		return isValid;
 	}
-	
-	public boolean insert(MemberDto dto){
+
+	@Override
+	public boolean insert(OrderReqDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		
 		int flag = 0;
-		String sql = "INSERT INTO member "
-			+ "(memberId, memberPwd, memberName, companyNo, memberLevel, "
-			+ " memberEmail, memberPhone, workArea) "
-			+ "VALUES(?, ?, ?, ?, ?, ?, ?, ?, SYSDATE)";
+		String sql = "INSERT INTO orderReq "
+			+ "(orderNo, memberId, workNo, companyNo, orderTitle, orderPrice, "
+			+ " orderComm, orderStatus, orderResult, startDate, endDate) "
+			+ "VALUES(orderNo_seq.NEXTVAL, ?, ?, ?, ?, ?, ?, ?, ?, SYSDATE, NULL)";
 		
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
+			
 			pstmt.setString(1, dto.getMemberId());
-			pstmt.setString(2, dto.getMemberPwd());
-			pstmt.setString(3, dto.getMemberName());
-			pstmt.setInt(4, dto.getCompanyNo());
-			pstmt.setString(5, dto.getMemberLevel());
-			pstmt.setString(6, dto.getMemberEmail());
-			pstmt.setString(7, dto.getMemberPhone());
-			pstmt.setString(8, dto.getWorkArea());
-
-			flag = pstmt.executeUpdate();
-		} catch (SQLException se) {
-			se.printStackTrace();
-		} finally {
-			try {
-				if (pstmt != null) pstmt.close();
-				if (conn != null) conn.close();
-			} catch (Exception e) { }
-		}
-		
-		if (flag > 0) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean update(MemberDto dto){
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		int flag = 0;
-		String sql = "UPDATE member "
-				    +"   SET memberPwd=?, memberName=?, companyNo=?, memberLevel=?, "
-				    +"		 memberEmail=?, memberPhone=?, workArea=? "
-				    +" WHERE memberId=? ";
-		
-		try {
-			conn = new DbcpBean().getConn();
-			pstmt = conn.prepareStatement(sql);
-
-			pstmt.setString(1, dto.getMemberPwd());
-			pstmt.setString(2, dto.getMemberName());
+			pstmt.setInt(2, dto.getWorkNo());
 			pstmt.setInt(3, dto.getCompanyNo());
-			pstmt.setString(4, dto.getMemberLevel());
-			pstmt.setString(5, dto.getMemberEmail());
-			pstmt.setString(6, dto.getMemberPhone());
-			pstmt.setString(7, dto.getWorkArea());
-			pstmt.setString(8, dto.getMemberId());
+			pstmt.setString(4, dto.getOrderTitle());
+			pstmt.setInt(5, dto.getOrderPrice());
+			pstmt.setInt(6, dto.getOrderComm());
+			pstmt.setString(7, dto.getOrderStatus());
+			pstmt.setString(8, dto.getOrderResult());
 
 			flag = pstmt.executeUpdate();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} finally {
@@ -218,19 +193,65 @@ public class MemberDao implements MemberDaoIF {
 			return false;
 		}
 	}
-	
-	public boolean delete(String memberId){
+
+	@Override
+	public boolean update(OrderReqDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
+		
 		int flag = 0;
-		String sql = "DELETE FROM member WHERE memberId=? ";
+		String sql = "UPDATE OrderReq "
+				    +"   SET memberId=?, workNo=?, companyNo=?, orderTitle=?, "
+				    +"		 orderPrice=?, orderComm=?, orderStatus=?, orderResult=? "
+				    +" WHERE orderNo=? ";
 		
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, memberId);
+
+			pstmt.setString(1, dto.getMemberId());
+			pstmt.setInt(2, dto.getWorkNo());
+			pstmt.setInt(3, dto.getCompanyNo());
+			pstmt.setString(4, dto.getOrderTitle());
+			pstmt.setInt(5, dto.getOrderPrice());
+			pstmt.setInt(6, dto.getOrderComm());
+			pstmt.setString(7, dto.getOrderStatus());
+			pstmt.setString(8, dto.getOrderResult());
+			pstmt.setInt(9, dto.getOrderNo());
 
 			flag = pstmt.executeUpdate();
+			
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} finally {
+			try {
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (Exception e) { }
+		}
+		
+		if (flag > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	@Override
+	public boolean delete(int id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		
+		int flag = 0;
+		String sql = "DELETE FROM orderReq WHERE orderNo=? ";
+		
+		try {
+			conn = new DbcpBean().getConn();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+
+			flag = pstmt.executeUpdate();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} finally {

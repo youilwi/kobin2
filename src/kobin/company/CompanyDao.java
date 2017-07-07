@@ -10,7 +10,7 @@ import java.util.List;
 import kobin.util.DbcpBean;
 
 
-public class CompanyDao implements CompanyDaoInterface {
+public class CompanyDao implements CompanyDaoIF {
 	private static CompanyDao dao;
 	private CompanyDao(){};
 	public static CompanyDao getInstance(){
@@ -21,8 +21,6 @@ public class CompanyDao implements CompanyDaoInterface {
 	}
 
 	public CompanyDto getData(int id){
-		Integer companyNo = (Integer)id;
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -34,7 +32,7 @@ public class CompanyDao implements CompanyDaoInterface {
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, companyNo);
+			pstmt.setInt(1, id);
 			
 			rs = pstmt.executeQuery();
 			while (rs.next()) {
@@ -104,9 +102,7 @@ public class CompanyDao implements CompanyDaoInterface {
 	}
 	
 	@Override
-	public boolean isValid(CompanyDto obj) {
-		CompanyDto dto = (CompanyDto)obj;
-		
+	public boolean isValid(CompanyDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -214,8 +210,6 @@ public class CompanyDao implements CompanyDaoInterface {
 	}
 	
 	public boolean delete(int id){
-		Integer companyNo = (Integer)id;
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
@@ -226,7 +220,7 @@ public class CompanyDao implements CompanyDaoInterface {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setInt(1,companyNo);
+			pstmt.setInt(1, id);
 			
 			flag = pstmt.executeUpdate();
 		} catch (SQLException se) {

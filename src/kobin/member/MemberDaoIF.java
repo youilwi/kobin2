@@ -2,7 +2,7 @@ package kobin.member;
 
 import java.util.List;
 
-public interface MemberDaoInterface {
+public interface MemberDaoIF {
 	public List<MemberDto> getList();
 	public MemberDto getData(String id);
 	public boolean isValid(MemberDto dto);

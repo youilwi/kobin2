@@ -1,4 +1,4 @@
-package kobin.board;
+package kobin.work;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,78 +9,43 @@ import java.util.List;
 
 import kobin.util.DbcpBean;
 
-public class BoardDao implements BoardDaoIF {
-
+public class WorkDao implements WorkDaoIF{
+	private static WorkDao dao;
+	private WorkDao(){};
+	public static WorkDao getInstance(){
+		if(dao==null){
+			dao=new WorkDao();
+		}
+		return dao;
+	}
+	
 	@Override
-	public List<BoardDto> getList() {
+	public List<WorkDto> getList() {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
-		List<BoardDto> list = new ArrayList<>();
-		String sql = "SELECT * FROM board ORDER BY boardNo DESC";
+		WorkDto dto = null;
+		List<WorkDto> list = new ArrayList<>();
+		String sql = "SELECT * FROM work ORDER BY workName asc";
 
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
 			
-			while (rs.next()) {
-				int boardNo = rs.getInt("boardNo");
-				String memberId = rs.getString("memberId");
-				String boardTitle = rs.getString("boardTitle");
-				String boardContent = rs.getString("boardContent");
-				String regDate = rs.getString("regDate");
-				int readCount = rs.getInt("readCount");
-				String boardType = rs.getString("boardType");
-				String filePath = rs.getString("filePath");
-				String PhotoPath = rs.getString("PhotoPath");
+			while(rs.next()){
+				dto = new WorkDto();
 				
-				BoardDto dto = new BoardDto();
+				int workno = rs.getInt("workNo");
+				String workName = rs.getString("workName");
+				String workDesc = rs.getString("workDesc");
 				
-				dto.setBoardNo(boardNo);
-				dto.setMemberId(memberId);
-				dto.setBoardTitle(boardTitle);
-				dto.setBoardContent(boardContent);
-				dto.setRegDate(regDate);
-				dto.setReadCount(readCount);
-				dto.setBoardType(boardType);
-				dto.setFilePath(filePath);
-				dto.setPhotoPath(PhotoPath);
+				dto.setWorkNo(workno);
+				dto.setWorkName(workName);
+				dto.setWorkDesc(workDesc);
 
 				list.add(dto);
-			}
-		} catch (SQLException se) {
-			se.printStackTrace();
-		} finally {
-			try {
-				if (rs != null)rs.close();
-				if (pstmt != null)pstmt.close();
-				if (conn != null)conn.close();
-			} catch (Exception e) { }
-		}
-
-		return list;
-	}
-
-	@Override
-	public BoardDto getData(int id) {
-		Integer boardNo = (Integer)id;
-		
-		Connection conn = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		BoardDto dto = new BoardDto();
-		String sql = "SELECT * FROM board WHERE boardNo=? ";
-
-		try {
-			conn = new DbcpBean().getConn();
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, boardNo);
-
-			rs = pstmt.executeQuery();
-			while (rs.next()) {
-
 			}
 		} catch (SQLException se) {
 			se.printStackTrace();
@@ -92,25 +57,58 @@ public class BoardDao implements BoardDaoIF {
 			} catch (Exception e) { }
 		}
 
+		return list;
+	}
+
+	@Override
+	public WorkDto getData(int id) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		WorkDto dto=null;
+		String sql = "SELECT workName, workDesc FROM work WHERE workNo=?";
+		
+		try {
+			conn = new DbcpBean().getConn();
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, id);
+			
+			rs = pstmt.executeQuery();
+			while (rs.next()) {
+				dto=new WorkDto();
+				dto.setWorkName(rs.getString("workName"));
+				dto.setWorkDesc(rs.getString("workDesc"));
+			}
+		} catch (SQLException se) {
+			se.printStackTrace();
+		} finally {
+			try {
+				if (rs != null) rs.close();
+				if (pstmt != null) pstmt.close();
+				if (conn != null) conn.close();
+			} catch (Exception e) { }
+		}
 		return dto;
 	}
 
 	@Override
-	public boolean isValid(BoardDto dto) {
+	public boolean isValid(WorkDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		
 		boolean isValid = false;
-		String sql = "SELECT * FROM board WHERE boardNo=? ";
+		String sql = "SELECT * FROM work WHERE workNo=? ";
 
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, dto.getBoardNo());
-
+			
+			pstmt.setInt(1, dto.getWorkNo());
 			rs = pstmt.executeQuery();
-			if(rs.next()) {
+			
+			while (rs.next()) {
 				isValid = true;
 			}
 		} catch (SQLException se) {
@@ -127,29 +125,23 @@ public class BoardDao implements BoardDaoIF {
 	}
 
 	@Override
-	public boolean insert(BoardDto dto) {		
+	public boolean insert(WorkDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		int flag = 0;
-		String sql = "INSERT INTO board "
-				+ "(boardNo, memberId, boardTitle, boardContent, regDate, "
-				+ " readCount, boardType, filePath, PhotoPath) "
-				+ "VALUES(boardNo_seq.NEXTVAL, ?, ?, ?, SYSDATE, ?, ?, ?, ?)";
-		
+		String sql = "INSERT INTO work (workNo, workName, workDesc) "
+					+"VALUES (?, ?, ?) ";
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
 			
-			pstmt.setString(1, dto.getMemberId());
-			pstmt.setString(2, dto.getBoardTitle());
-			pstmt.setString(3, dto.getBoardContent());
-			pstmt.setInt(4, dto.getReadCount());
-			pstmt.setString(5, dto.getBoardType());
-			pstmt.setString(6, dto.getFilePath());
-			pstmt.setString(7, dto.getPhotoPath());
-
+			pstmt.setInt(1, dto.getWorkNo());
+			pstmt.setString(2, dto.getWorkName());
+			pstmt.setString(3, dto.getWorkDesc());
+			
 			flag = pstmt.executeUpdate();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} finally {
@@ -167,29 +159,25 @@ public class BoardDao implements BoardDaoIF {
 	}
 
 	@Override
-	public boolean update(BoardDto dto) {		
+	public boolean update(WorkDto dto) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		int flag = 0;
-		String sql = "UPDATE board "
-					+"   SET memberId=?, boardTitle=?, boardContent=?, "
-					+"		 readCount=?, boardType=?, filePath=?, photoPath=? "
-					+" WHERE boardNo=? ";
+		String sql = "UPDATE work "
+					+"   SET workName=?, workDesc=?"
+					+" WHERE companyNo=? ";
 		
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setString(1, dto.getMemberId());
-			pstmt.setString(2, dto.getBoardTitle());
-			pstmt.setString(3, dto.getBoardContent());
-			pstmt.setInt(4, dto.getReadCount());
-			pstmt.setString(5, dto.getBoardType());
-			pstmt.setString(6, dto.getFilePath());
-			pstmt.setString(7, dto.getPhotoPath());
 
+			pstmt.setString(1, dto.getWorkName());
+			pstmt.setString(2, dto.getWorkDesc());
+			pstmt.setInt(3, dto.getWorkNo());
+			
 			flag = pstmt.executeUpdate();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} finally {
@@ -208,20 +196,19 @@ public class BoardDao implements BoardDaoIF {
 
 	@Override
 	public boolean delete(int id) {
-		Integer boardNo = (Integer)id;
-		
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		
 		int flag = 0;
-		String sql = "DELETE FROM board WHERE boardNo=? ";
+		String sql = "DELETE from work WHERE workNo=?";
 		
 		try {
 			conn = new DbcpBean().getConn();
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, boardNo);
-
+			
+			pstmt.setInt(1, id);			
 			flag = pstmt.executeUpdate();
+			
 		} catch (SQLException se) {
 			se.printStackTrace();
 		} finally {
