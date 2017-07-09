@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <%
-	String id = (String)session.getAttribute("id");
+	String memberId = (String)session.getAttribute("memberId");
 	String cPath = request.getContextPath();
 %>
 
@@ -15,9 +15,9 @@
 
 <body>
 
-<%if(id != null){ %>
+<%if(memberId != null){ %>
 	<p>
-		<a href="users/private/info.jsp"><%=id %></a>
+		<a href="users/private/info.jsp"><%=memberId %></a>
 		회원님 로그인 되었입니다.
 	</p>&nbsp;&nbsp;&nbsp;
 	<a href="login/logout.jsp">로그아웃</a>

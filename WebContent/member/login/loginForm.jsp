@@ -18,7 +18,7 @@
 
 <body>
 
-<jsp:include page="../include/navbar.jsp" ></jsp:include>
+<jsp:include page="../../include/navbar.jsp" ></jsp:include>
 
 <div class="container" style="margin-top:250px">	
 	<div class="row">
