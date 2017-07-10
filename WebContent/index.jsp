@@ -32,10 +32,10 @@
 		
 			<ul style="font-size: 24px;">
 				<li><a href="member/memberInsertForm.jsp">회원가입</a></li>
-				<li><a href="login/loginForm.jsp?url=<%=cPath%>">로그인</a></li>	
+				<li><a href="member/login/loginForm.jsp?url=<%=cPath%>">로그인</a></li>	
 				
-				<li><a href="company/companyList.jsp">가입회원사 현황</a></li>
-				<li><a href="order/orderList.jsp">설비견적 주문 현황</a></li>
+				<li><a href="manager/company/companyList.jsp">가입 회원사 현황</a></li>
+				<li><a href="member/memberList.jsp">가입 회원 현황</a></li>
 				
 				<li><a href="board/boardList.jsp">게시판 현황(비회원전용)</a></li>
 				<li><a href="member/memberDelete.jsp">회원탈퇴</a></li>
